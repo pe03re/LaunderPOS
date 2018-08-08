@@ -5,7 +5,8 @@ const db = require('../utils/db');
 const Soap = require('../models/Soap');
 
 /*
-	Add a soap
+	POST
+	Add a Soap to Inventory
 */
 exports.postCreateSoap = (req, res) => {
 
@@ -44,7 +45,8 @@ exports.postCreateSoap = (req, res) => {
 }
 
 /*
-	Get all soaps
+	GET
+	List all Soaps in Inventory
 */
 exports.getSoapInventory = (req, res) => {
 
@@ -65,25 +67,31 @@ exports.getSoapInventory = (req, res) => {
 }
 
 /*
-	Update Soap
+	PUT
+	Update properties of a Soap
 */
 exports.updateSoaps = (req, res) => {
 
 	const soapId = req.params.soapId;
 	let quantity;
+	let price;
 
 	if(req.body.quantity != undefined || req.body.quantity != null) {
 		quantity = req.body.quantity;
 	}
 
+	if(req.body.price != undefined || req.body.price != null) {
+		price = req.body.price;
+	}
+
 	const update = {
-		quantity: quantity
+		quantity: quantity,
+		price: price
 	};
 
 	return db.updateById('Soap', soapId, update)
 	.then(resp => {
 		const soapData = resp.doc;
-		console.log(soapData);
 
 		req.flash('success', { msg: 'Soap has been successfully updated!'});
 		return res.redirect('/inventory/soap');

@@ -95,7 +95,7 @@ function updateById(resourceName, id, update) {
 	const mongoUpdate = { $set: update };
 	const query = { _id: id }
 
-	return collection.findOneAndUpdate(query, mongoUpdate)
+	return collection.findOneAndUpdate(query, mongoUpdate, {new: true})
 	.then(data => {
 
 		const resp = {

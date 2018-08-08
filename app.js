@@ -23,6 +23,9 @@ app.use(flash());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Morgan Configs
+app.use(morgan(':date[iso] :status :method :url [:response-time ms] :remote-addr'));
+
 // Handlebars Template Engine
 const hbs = exphbs.create({
 	defaultLayout: 'layout.hbs'

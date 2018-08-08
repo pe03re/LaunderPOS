@@ -1,4 +1,4 @@
-<section>
+<section style="padding-top: 20px">
 	<!-- All Soaps Inventory -->
 	<div class="container">
 		<div class="table-responsive" style="padding-top: 15px">
@@ -20,7 +20,9 @@
 						<form method="POST" action="/update/soap/{{this._id}}">
 						<tr>
 							<td>{{this.name}}</td>
-							<td>{{this.USD}}</td>
+							<td>
+								<input type="number" value="{{this.USD}}" name="price" style="width: 65px"/>
+							</td>
 							<td>
 								<input type="number" value="{{this.quantity}}" name="quantity" style="width: 50px"/>
 							</td>

@@ -5,7 +5,7 @@ const db = require('../utils/db');
 const Soap = require('../models/Soap');
 
 /*
-	POST
+	POST /inventory/soap
 	Add a Soap to Inventory
 */
 exports.postCreateSoap = (req, res) => {
@@ -29,13 +29,37 @@ exports.postCreateSoap = (req, res) => {
 		price: price
 	};
 
-	return db.createDoc('Soap', newSoapObj)
-	.then(resp => {
-		const newSoapData = resp.doc;
-		console.log(newSoapData);
+	let soapExists = false; // Bool to check for if a soap already exists
 
-		req.flash('success', { msg: 'Soap has been successfully added!'});
-		return res.redirect('/inventory/soap');
+	return db.search('Soap', {})
+	.then(resp => {
+		const allSoapsData = resp.docs;
+
+		// We will need to loop through the array of data and compare the value of each name, and see if it matches the input value of name. If it does, that means that the Soap already exists, in which case we should throw an error
+		if(allSoapsData.length > 0) {
+			for(let i=0; i<allSoapsData.length; i++) {
+				if(allSoapsData[i].name == name) {
+					soapExists = true;
+				}
+			}
+		};
+
+		// We will then check if soapExists is true, if it is then we will redirect the user to the inventory page with an error message
+		if(soapExists == true) {
+			req.flash('errors', { msg: 'Soap already exists!'});
+			return res.redirect('/inventory/soap');
+
+			// Otherwise, we proceed with adding the soap to our database
+		} else {
+			return db.createDoc('Soap', newSoapObj)
+			.then(resp => {
+				const newSoapData = resp.doc;
+				console.log(newSoapData);
+
+				req.flash('success', { msg: 'Soap has been successfully added!'});
+				return res.redirect('/inventory/soap');
+			})
+		}
 	})
 	.catch(err => {
 		console.log(err);
@@ -45,7 +69,7 @@ exports.postCreateSoap = (req, res) => {
 }
 
 /*
-	GET
+	GET /inventory/soap
 	List all Soaps in Inventory
 */
 exports.getSoapInventory = (req, res) => {
@@ -67,7 +91,7 @@ exports.getSoapInventory = (req, res) => {
 }
 
 /*
-	PUT
+	PUT /update/soap/:soapId
 	Update properties of a Soap
 */
 exports.updateSoaps = (req, res) => {

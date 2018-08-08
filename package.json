@@ -1,0 +1,29 @@
+{
+  "name": "laundry-pos-node",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node start.js",
+    "dev": "nodemon -e js start.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.3",
+    "connect-mongo": "^2.0.1",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "express-flash": "0.0.2",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.6",
+    "hbs": "^4.0.1",
+    "http": "0.0.0",
+    "mongoose": "^5.2.7",
+    "mongoose-currency": "^0.2.0",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.18.3",
+    "path": "^0.12.7"
+  }
+}

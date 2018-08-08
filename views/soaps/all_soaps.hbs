@@ -1,0 +1,63 @@
+<section>
+	<!-- All Soaps Inventory -->
+	<div class="container">
+		<div class="table-responsive" style="padding-top: 15px">
+			<legend>
+				Soap Inventory
+			</legend>
+				<table class="table table-hover table-vertical-middle">
+					<thead>
+						<tr>
+							<th>Soap Name</th>
+							<th>Price</th>
+							<th>Quantity</th>
+							<th>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						{{#each soaps}}
+						<form method="POST" action="/update/soap/{{this._id}}">
+						<tr>
+							<td>{{this.name}}</td>
+							<td>{{this.USD}}</td>
+							<td>
+								<input type="number" value="{{this.quantity}}" name="quantity" style="width: 50px"/>
+							</td>
+							<td>
+								{{#if this}}
+								<button type="submit" class="btn btn-primary">Update</button>
+								{{/if}}
+							</td>
+						</tr>
+						</form>
+						{{/each}}
+					</tbody>
+				</table>
+		</div>
+
+		<br />
+		<br />
+		<hr />
+
+	<!-- Create a Soap -->
+		<legend>
+			Add New Soap to Inventory
+		</legend>
+		<form method="POST" action="/inventory/soap">
+			<div class="form-group">
+			  <label for="example-text-input" class="col-2 col-form-label">Name</label>
+			  <div class="col-10">
+			    <input class="form-control" name="name" type="text">
+			  </div>
+			</div>
+			<div class="form-group">
+				<label for="example-text-input" class="col-2 col-form-label">Price</label></label>
+				<div class="col-10">
+					<input class="form-control" name="price" type="text">
+				</div>
+			</div>
+			<button type="submit" class="btn btn-primary">Add</button>
+		</form>
+	</div>
+</section>

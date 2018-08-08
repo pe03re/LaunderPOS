@@ -1,6 +1,6 @@
 'use strict';
 const mongoose = require('mongoose');
-require('../models/Soap'); // These will be passed into mongoose
+require('../models'); // Imports all of the models in models/index
 
 module.exports = {
  findById, // get (one)

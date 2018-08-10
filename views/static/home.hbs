@@ -1,14 +1,33 @@
-<!-- HOME -->
-<section id="home" class="height-450" style="background:url('assets/images/demo/wall2.jpg')">
-	<div class="display-table">
-		<div class="display-table-cell vertical-align-middle">
+<!--
+	HOME
+	<section id="home" class="height-450" style="background:url('assets/images/demo/wall2.jpg')">
+		<div class="display-table">
+			<div class="display-table-cell vertical-align-middle">
 
-			<div class="container text-center">
-				<h1 class="nomargin size-50 weight-300 wow fadeInUp" data-wow-delay="0.4s">Web Based POS</h1>
-				<p class="lead font-lato size-30 wow fadeInUp" data-wow-delay="0.7s">Inventory Managment, Customer Contacts, Etc.</p>
+				<div class="container text-center">
+					<h1 class="nomargin size-50 weight-300 wow fadeInUp" data-wow-delay="0.4s">Web Based POS</h1>
+					<p class="lead font-lato size-30 wow fadeInUp" data-wow-delay="0.7s">Inventory Managment, Customer Contacts, Etc.</p>
+				</div>
+
 			</div>
-
 		</div>
+	</section>
+-->
+
+<!-- All Soaps -->
+<section>
+	<div class="container">
+		<ul class="row clients-dotted list-inline">
+			{{#each soaps}}
+			<li class="col-md-3 col-sm-3 col-xs-6">
+				<a href="#">
+					<img class="img-responsive" src="assets/images/demo/brands/1.jpg" alt="client" />
+					<h3>
+						{{this.name}} - ${{this.USD}}
+					</h3>
+				</a>
+			</li>
+			{{/each}}
+		</ul>
 	</div>
 </section>
-<!-- /HOME -->

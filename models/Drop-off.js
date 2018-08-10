@@ -11,6 +11,7 @@ const Currency = mongoose.Types.Currency;
 
 const DropOffSchema = new mongoose.Schema({
 	ticket_number: Number,
+	status: String , // paid, hold
 	date: String,
 	customer_firstName: String,
 	customer_lastName: String,
@@ -22,7 +23,8 @@ const DropOffSchema = new mongoose.Schema({
 	},
 	customer_email: String,
 	customer_phone: String,
-	price: { type: Currency }
+	price: { type: Currency },
+	bag_color: String
 });
 
 const DropOffs = mongoose.model('DropOffs', DropOffSchema);

@@ -1,0 +1,11 @@
+Home - Overview (Needs buttons that are big enough to be touched
+Soap (barcode reader) - Add by touch , Admins can update inventory
+Dropoff (reciept printer) - On CLick => Phone Number => if exists, add to existing customer, if not existed, new customer. Then price and bag color, type: hold or paid
+
+Daily reports: Soap: Inventory report
+DropOff Inventory
+
+
+Soaps have two barcodes, primary and secondary
+
+history(Admin): Dropoff()

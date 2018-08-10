@@ -13,6 +13,8 @@ const Currency = mongoose.Types.Currency;
 const SoapSchema = new mongoose.Schema({
 	name: String,
 	price: { type: Currency },
+	original_price: { type: Currency}, // Wholesale price
+	barcode_id: String,
 	quantity: {
 		type: Number,
 		default: 1

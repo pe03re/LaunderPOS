@@ -16,7 +16,6 @@ const CustomersSchema = new mongoose.Schema({
 	email: String,
 	phone: String,
 	date_registered: String,
-	drop_offs: [] // Array of Drop Off tickets that will be stored here
 });
 
 const Customers = mongoose.model('Customers', CustomersSchema);

@@ -5,6 +5,28 @@ const db = require('../utils/db');
 const Soap = require('../models/Soap');
 
 /*
+	GET /inventory/soap
+	List all Soaps in Inventory
+*/
+exports.getSoapInventory = (req, res) => {
+
+	return db.search('Soap', {})
+	.then(resp => {
+		const soaps = resp.docs;
+
+		let i=0;
+		for(i; i<soaps.length; i++) {
+			soaps[i].USD = (soaps[i].price)/100; // Render correct USD format to User
+		}
+
+		return res.render('soaps/all_soaps', {
+			title: 'Soap Inventory',
+			soaps: soaps
+		})
+	})
+}
+
+/*
 	POST /inventory/soap
 	Add a Soap to Inventory
 */
@@ -65,28 +87,6 @@ exports.postCreateSoap = (req, res) => {
 		console.log(err);
 		req.flash('errors', { msg: 'Error in adding soap. Please try again'});
 		return res.redirect('/inventory/soap');
-	})
-}
-
-/*
-	GET /inventory/soap
-	List all Soaps in Inventory
-*/
-exports.getSoapInventory = (req, res) => {
-
-	return db.search('Soap', {})
-	.then(resp => {
-		const soaps = resp.docs;
-
-		let i=0;
-		for(i; i<soaps.length; i++) {
-			soaps[i].USD = (soaps[i].price)/100; // Render correct USD format to User
-		}
-
-		return res.render('soaps/all_soaps', {
-			title: 'Soap Inventory',
-			soaps: soaps
-		})
 	})
 }
 

@@ -52,6 +52,7 @@ app.use(session({
 */
 const staticController = require('./controllers/static');
 const soapController = require('./controllers/soap');
+const dropOffController = require('./controllers/drop-off');
 
 // Static
 app.get('/', staticController.getHome);
@@ -60,6 +61,10 @@ app.get('/', staticController.getHome);
 app.get('/inventory/soap', soapController.getSoapInventory);
 app.post('/inventory/soap', soapController.postCreateSoap);
 app.post('/update/soap/:soapId', soapController.updateSoaps);
+
+// DropOffs
+app.get('/drop-off/create', dropOffController.getDropOffForm);
+app.post('/drop-off/create', dropOffController.postCreateDropOff);
 
 
 module.exports = app;

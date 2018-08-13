@@ -59,6 +59,7 @@ const customersController = require('./controllers/customer');
 app.get('/', staticController.getHome);
 
 // Soaps
+app.get('/overview/soap', soapController.getSoapOverview);
 app.get('/inventory/soap', soapController.getSoapInventory);
 app.post('/inventory/soap', soapController.postCreateSoap);
 app.post('/soap/update/:soapId', soapController.updateSoaps);

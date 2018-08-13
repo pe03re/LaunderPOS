@@ -14,31 +14,66 @@
 	</section>
 -->
 
-<!-- All Soaps -->
+<!-- Overview -->
 <section>
 	<div class="container">
 		<ul class="row clients-dotted list-inline">
-			<!-- Soaps -->
-			{{#each soaps}}
+
+			<!-- Soap -->
 			<li class="col-md-3 col-sm-3 col-xs-6">
 				<h3>
 					<div>
-						{{this.name}}
-					</div>
-					<div>
-						${{this.USD}}
+						SOAP
 					</div>
 				</h3>
-				<!--
-				 	TODO: Add a button to add this to cart.
-				-->
 				<div class="shop-item-buttons">
-					<a class="btn btn-primary">
+					<a href="/overview/soap" class="btn btn-primary">
 						<i class="fa fa-plus"></i>
 					</a>
 				</div>
 			</li>
-			{{/each}}
+
+			<!-- Dropoff -->
+			<li class="col-md-3 col-sm-3 col-xs-6">
+				<h3>
+					<div>
+						DROPOFF
+					</div>
+				</h3>
+				<div class="shop-item-buttons">
+					<a href="/drop-off/create" class="btn btn-primary">
+						<i class="fa fa-plus"></i>
+					</a>
+				</div>
+			</li>
+
+			<!-- Inventory  -->
+			<li class="col-md-3 col-sm-3 col-xs-6">
+				<h3>
+					<div>
+						INVENTORY
+					</div>
+				</h3>
+				<div class="shop-item-buttons">
+					<a href="/inventory/soap" class="btn btn-primary">
+						<i class="fa fa-plus"></i>
+					</a>
+				</div>
+			</li>
+
+			<!-- Customers -->
+			<li class="col-md-3 col-sm-3 col-xs-6">
+				<h3>
+					<div>
+						CUSTOMERS
+					</div>
+				</h3>
+				<div class="shop-item-buttons">
+					<a href="/customers/list" class="btn btn-primary">
+						<i class="fa fa-plus"></i>
+					</a>
+				</div>
+			</li>
 		</ul>
 	</div>
 </section>

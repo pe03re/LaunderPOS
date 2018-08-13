@@ -24,6 +24,12 @@ exports.getSoapInventory = (req, res) => {
 			soaps: soaps
 		})
 	})
+	.catch(err => {
+		console.log(err);
+
+		req.flash('errors', { msg: "Error looking up Soaps"});
+		return res.redirect('/')
+	})
 }
 
 /*
@@ -55,12 +61,12 @@ exports.postCreateSoap = (req, res) => {
 
 	return db.search('Soap', {})
 	.then(resp => {
-		const allSoapsData = resp.docs;
+		const all_soaps_data = resp.docs;
 
 		// We will need to loop through the array of data and compare the value of each name, and see if it matches the input value of name. If it does, that means that the Soap already exists, in which case we should throw an error
-		if(allSoapsData.length > 0) {
-			for(let i=0; i<allSoapsData.length; i++) {
-				if(allSoapsData[i].name == name) {
+		if(all_soaps_data.length > 0) {
+			for(let i=0; i<all_soaps_data.length; i++) {
+				if(all_soaps_data[i].name == name) {
 					soapExists = true;
 				}
 			}
@@ -75,8 +81,6 @@ exports.postCreateSoap = (req, res) => {
 		} else {
 			return db.createDoc('Soap', newSoapObj)
 			.then(resp => {
-				const newSoapData = resp.doc;
-				console.log(newSoapData);
 
 				req.flash('success', { msg: 'Soap has been successfully added!'});
 				return res.redirect('/inventory/soap');
@@ -91,7 +95,7 @@ exports.postCreateSoap = (req, res) => {
 }
 
 /*
-	PUT /update/soap/:soapId
+	PUT /soap/update/:soapId
 	Update properties of a Soap
 */
 exports.updateSoaps = (req, res) => {
@@ -115,7 +119,6 @@ exports.updateSoaps = (req, res) => {
 
 	return db.updateById('Soap', soapId, update)
 	.then(resp => {
-		const soapData = resp.doc;
 
 		req.flash('success', { msg: 'Soap has been successfully updated!'});
 		return res.redirect('/inventory/soap');

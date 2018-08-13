@@ -20,6 +20,12 @@ exports.getDropOffForm = (req, res) => {
 	Add a dropoff to database and adds the customer to our database
 */
 exports.postCreateDropOff = (req, res) => {
+
+	// Global variables to keep in scope
+	let dropOff_id;
+	let dropOff_data;
+	let dropOff_ticket_num;
+
 	let price;
 	let bag_color;
 	let status;
@@ -87,14 +93,51 @@ exports.postCreateDropOff = (req, res) => {
 
 	return db.createDoc('DropOffs', newDropOff)
 	.then(resp => {
+
+		dropOff_data = resp.doc;
+		// We want the id of the dropoff so we can update the dropoff with a ticket number
+		dropOff_id = dropOff_data._id;
+
 		/*
 		 	Here we need to do to two things:
 			1. Increment the number of ticket orders (starting at 1, based on the number of dropoffs existed)
 			2. Create a customer IF the customer does not currently exist
 		*/
-		const dropOff_data = resp.doc;
 
-		// Once we create the drop off order, we are going to add the customer information to our database
+		// We should search the database for the amoiunt of dropoffs for the ticket number, search the database to find a match in our customers if any
+		const promise_array = Promise.all([
+			db.search('DropOffs', {}),
+			db.search('Customers', {})
+		]);
+
+		return promise_array;
+	})
+	.then(resp => {
+
+		const allDropOffs = resp[0].docs;
+		const allCustomers = resp[1].docs;
+
+		// Tally the number of dropoffs in our system as the ticket number, and add it to an update object to update our dropoff
+		dropOff_ticket_num = allDropOffs.length;
+
+		const dropOff_ticket_update = {
+			ticket_number: dropOff_ticket_num
+		}
+
+		let anyNewCustomer = true; // Boolean to check if there is a match in customers, true by default to create our first customer
+
+		// Loop through all customers
+		if(allCustomers.length > 0) {
+			for(let i=0; i<allCustomers.length; i++) {
+				if(allCustomers[i].phone == dropOff_data.customer_phone) {
+					anyNewCustomer = false;
+				} else {
+					anyNewCustomer = true;
+				}
+			}
+		}
+
+		// If there is no match, we are going to update and add this to our Customers collection
 		const newCustomer = {
 			firstName: dropOff_data.customer_firstName,
 			lastName: dropOff_data.customer_lastName,
@@ -107,10 +150,23 @@ exports.postCreateDropOff = (req, res) => {
 			email: dropOff_data.customer_email,
 			phone: dropOff_data.customer_phone,
 			date_registered: dropOff_data.date,
-			drop_offs: dropOff_data
 		}
 
+		let create_customer_promise = undefined // Variable containing the function for creating a doc in our database
 
+		if(anyNewCustomer == true) {
+			create_customer_promise = db.createDoc('Customers', newCustomer);
+		};
+
+		// Finally we are going to perform database functions
+		const promise_array = Promise.all ([
+			db.updateById('DropOffs', dropOff_id, dropOff_ticket_update),
+			create_customer_promise
+		]);
+
+		return promise_array;
+	})
+	.then(resp => {
 
 		req.flash('success', { msg: 'Dropoff has been successfully added!'});
 		return res.redirect('/drop-off/create');

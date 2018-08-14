@@ -50,17 +50,39 @@ exports.postAddToCart = (req, res) => {
 					soap_data = resp.doc;
 
 					// Now that we have found the soap, we need to look for a transaction to add this to, since there is can only be one 'in progress' transaction, we should query out database for such
-					return db.search('Transactions', { status: "in progress "})
+					const query = {
+						"status": "in progress"
+					};
+					return db.search('Transactions', query)
 				})
 				.then(resp => {
+					const num_found = resp.metadata.found;
 
 					// Check if there is any 'in progress' transaction
-					if(resp.length > 0) {
-						const current_transaction = resp.docs;
+					if(num_found == 1) {
+						console.log("EXISTING TRANSACTION FOUND");
+						const current_transaction = resp.docs[0];
+
+						// Add Soap to transaction
+						const sales = current_transaction.sales;
+						sales.push(soap_data);
+
+						// Update the transaction
+						const transaction_id = current_transaction._id;
+
+						// Update database
+						return db.updateById('Transactions', transaction_id, current_transaction)
+						.then(resp => {
+
+							// Now that the item has been added, we should send a success message to the client-side
+							json_response["request_status"] = "success";
+							return res.json( json_response );
+						})
 					}
 
 					// Otherwise, create a transaction
 					else {
+						console.log("NO TRANSACTION FOUND, TRANSACTION CREATED");
 						const new_transaction = {};
 
 						// Update status to 'in progress'
@@ -84,26 +106,6 @@ exports.postAddToCart = (req, res) => {
 								json_response["request_status"] = "success";
 								return res.json( json_response );
 							})
-						})
-					}
-
-					// 'in progress' transaction is found
-					if(current_transaction) {
-
-						// Add Soap to transaction
-						const sales = current_transaction.sales;
-						sales.push(soap_data);
-
-						// Update the transaction
-						const transaction_id = current_transaction._id;
-
-						// Update database
-						return db.updateById('Transactions', transaction_id, current_transaction)
-						.then(resp => {
-
-							// Now that the item has been added, we should send a success message to the client-side
-							json_response["request_status"] = "success";
-							return res.json( json_response );
 						})
 					}
 				})

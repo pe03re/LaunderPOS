@@ -10,7 +10,7 @@ const Currency = mongoose.Types.Currency;
 */
 
 const DropOffSchema = new mongoose.Schema({
-	ticket_number: Number,
+	ticket_number: Number, // Starts at 1
 	status: String , // paid, hold
 	date: String,
 	customer_firstName: String,

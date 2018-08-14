@@ -1,5 +1,5 @@
 /*
-	All functions related to drop-offs
+	All logic related to drop-offs
 */
 const db = require('../utils/db');
 const DropOffs = require('../models/Drop-off');

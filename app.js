@@ -72,7 +72,8 @@ app.post('/drop-off/create', dropOffController.postCreateDropOff);
 // Customers
 app.get('/customers/list', customersController.getCustomersList);
 
-// Transactions
+// Transactions API
 app.post('/transaction/cart/add', transactionController.postAddToCart);
+app.get('/transaction/cart/get', transactionController.getCurrentTransaction);
 
 module.exports = app;

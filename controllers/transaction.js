@@ -121,7 +121,49 @@ exports.postAddToCart = (req, res) => {
 	}
 }
 
+/*
+	GET /transaction/cart/get
+	Gets items in cart
+*/
 exports.getCurrentTransaction = (req, res) => {
+	// This will return an json item to the client-side, and the ajax there will fill in the cart ui
+	const json_response = {};
+	json_response["msg_type"] = "server_response";
+
+	// Look up the transactions we have that is 'in progress';
+	const query = {
+		"status": "in progress"
+	};
+	return db.search('Transactions', query)
+	.then(resp => {
+		const num_found = resp.metadata.found;
+
+		// Check if there is any 'in progress' transaction
+		if(num_found == 1) {
+			console.log("EXISTING TRANSACTION FOUND");
+			const current_transaction = resp.docs[0];
+
+			// We want to send back the sales field of the transaction
+			const sales = current_transaction.sales;
+
+			// Loop through each and add it to our json response message
+			json_response["data"] = [];
+			for(let i=0; i<sales.length; i++) {
+
+				json_response["data"].push( sales[i] );
+			}
+
+			json_response["request_status"] = "success";
+			// Send the json response to the client
+			return res.json( json_response );
+		}
+		// Otherwise, we send the data to be fill into the client ui like "Cart is Empty.";
+		else {
+			json_response["request_status"] = "error";
+			json_response["data"] = "Cart is Empty";
+			return res.json( json_response );
+		}
+	})
 
 };
 

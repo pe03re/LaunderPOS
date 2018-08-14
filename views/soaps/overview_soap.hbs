@@ -22,9 +22,8 @@
 								${{this.USD}}
 							</div>
 						</h3>
-						<input type="hidden" id="soapId" value="{{this._id}}" />
-						<div class="addBtn shop-item-buttons">
-							<a class="btn btn-primary">
+						<div class="shop-item-buttons">
+							<a class="addBtn btn btn-primary" href="#" data-value={{this._id}}>
 								<i class="fa fa-plus"></i>
 							</a>
 						</div>
@@ -87,10 +86,10 @@
 	$(document).ready(function() {
 
 		// On 'addBtn' click
-		$(".addBtn").click(function() {
+		$("a.addBtn").click(function() {
 
 			// Assign Variables
-			const soapId = $("#soapId").val();
+			const soapId = $(this).data("value");
 
 			// Prepare Soap Data to be passed into JSON
 			const soap_data = {};

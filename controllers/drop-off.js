@@ -1,6 +1,3 @@
-/*
-	All logic related to drop-offs
-*/
 const db = require('../utils/db');
 const DropOffs = require('../models/Drop-off');
 const Customers = require('../models/Customers');

@@ -1,6 +1,3 @@
-/**
-	All logic related to Soaps
-**/
 const db = require('../utils/db');
 const Soap = require('../models/Soap');
 

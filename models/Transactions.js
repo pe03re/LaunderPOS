@@ -9,7 +9,7 @@ const TransactionSchema = new mongoose.Schema({
 	date: String,
 	total_price: Number,
 	sales: [], // Array that stores what sale object is added as part of the transaction,
-	status: String // "Done", "In Progress"
+	status: String // "in progress", "done"
 });
 
 const Transactions = mongoose.model('Transactions', TransactionSchema);

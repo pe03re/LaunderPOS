@@ -1,7 +1,3 @@
-/*
- 	All Logic for Customers
-*/
-
 const db = require('../utils/db');
 const Customers = require('../models/Soap');
 

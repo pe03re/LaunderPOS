@@ -1,6 +1,3 @@
-/*
-	All logic of static pages
-*/
 const db = require('../utils/db');
 const Soap = require('../models/Soap');
 

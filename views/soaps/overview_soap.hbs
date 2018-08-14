@@ -22,7 +22,8 @@
 								${{this.USD}}
 							</div>
 						</h3>
-						<div class="shop-item-buttons">
+						<input type="hidden" id="soapId" value="{{this._id}}" />
+						<div id="addBtn" class="shop-item-buttons">
 							<a class="btn btn-primary">
 								<i class="fa fa-plus"></i>
 							</a>
@@ -80,3 +81,56 @@
 		</div>
 	</div>
 </section>
+
+<!-- AJAX -->
+<script>
+	$(document).ready(function() {
+
+		// On 'addBtn' click
+		$("#addBtn").click(function() {
+
+			// Assign Variables
+			const soapId = $("#soapId").val();
+
+			// Prepare Soap Data to be passed into JSON
+			const soap_data = {};
+			soap_data["id"] = soapId;
+
+			// Prepare JSON request
+			const json_request = {};
+			json_request["msg_type"] = "server_request";
+			json_request["item_type"] = "soap";
+			json_request["data"] = soap_data;
+
+			// Server URL
+			const url = '/transaction/cart/add';
+
+			// Post to server via Ajax
+			$.ajax({
+				url: url,
+				method: 'POST',
+				contentType: "application/json",
+				data: JSON.stringify( json_request ),
+				success: function(data) {
+					// On Error
+					if( "request_status" in data && data["request_status"] == "error" ) {
+						if( "error" in data) {
+							alert(data["error"]);
+						}
+
+					} else {
+						if( "request_status" in data && data["request_status"] == "success" ) {
+							alert("Item added!");
+
+							// TODO: Need to think on how to load the cart now that the item has been added
+						}
+					}
+				},
+				error: function(err) {
+					console.log(err);
+					alert("Failed to contact server.");
+				}
+			});
+		})
+	})
+</script>

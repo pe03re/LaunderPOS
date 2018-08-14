@@ -54,6 +54,7 @@ const staticController = require('./controllers/static');
 const soapController = require('./controllers/soap');
 const dropOffController = require('./controllers/drop-off');
 const customersController = require('./controllers/customer');
+const transactionController = require('./controllers/transaction');
 
 // Static
 app.get('/', staticController.getHome);
@@ -70,5 +71,8 @@ app.post('/drop-off/create', dropOffController.postCreateDropOff);
 
 // Customers
 app.get('/customers/list', customersController.getCustomersList);
+
+// Transactions
+app.post('/transaction/cart/add', transactionController.postAddToCart);
 
 module.exports = app;

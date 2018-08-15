@@ -13,6 +13,8 @@ exports.getDropOffForm = (req, res) => {
 }
 
 /*
+	NOTE: DEPRECATED, WE WILL JUST USE OUR TRANSACTION API.
+	
 	POSt /drop-off/create
 	Add a dropoff to database and adds the customer to our database
 */

@@ -41,6 +41,7 @@ exports.postAddToCart = (req, res) => {
 				SOAP
 			*/
 			if(json["item_type"] == "soap") {
+
 				const soapId = data["id"];
 				let soap_data;
 
@@ -118,8 +119,160 @@ exports.postAddToCart = (req, res) => {
 					json_response["request_status"] = "error";
 					return res.json( json_response );
 				})
-			}
+			};
 
+			/*
+				DROP-OFF
+
+				For items that are dropoffs, it will be a bit more complicated than for adding a soap.
+
+				1.) We need to add it to the 'DropOffs' collection, and if the customer is not in our database, we need to add the object to 'Customers' as well.
+				2.) After updating our database, we will also need to add it to the our current 'in progress' transaction too
+			*/
+			if(json["item_type"] == "drop-off") {
+
+				const new_dropoff_data = json["data"];
+				let dropoff_data;
+				let dropoff_id;
+
+				// Create the dropoff
+				return db.createDoc('DropOffs', new_dropoff_data)
+				.then(resp => {
+					dropOff_data = resp.doc;
+					dropOff_id = dropOff_data._id;
+
+					// We want to update the dropoff with its ticket_number (starting at 1), and then search for if the customer's number exists in our database
+					const promise_array = Promise.all([
+						db.search('DropOffs', {}),
+						db.search('Customers', {})
+					]);
+
+					return promise_array;
+				})
+				.then(resp => {
+					const allDropOffs = resp[0].docs;
+					const allCustomers = resp[1].docs;
+
+					// Tally the number of dropoffs in our system as the ticket number, and add it to an update object to update our dropoff
+					dropOff_ticket_num = allDropOffs.length;
+
+					const dropOff_ticket_update = {
+						ticket_number: dropOff_ticket_num
+					};
+
+					let anyNewCustomer = true; // Boolean to check if there is a match in customers, true by default to create our first customer
+
+					// Loop through all customers
+					if(allCustomers.length > 0) {
+						for(let i=0; i<allCustomers.length; i++) {
+							if(allCustomers[i].phone == dropOff_data.customer_phone) {
+								anyNewCustomer = false;
+							} else {
+								anyNewCustomer = true;
+							}
+						}
+					};
+
+					// If there is no match, we are going to update and add this to our Customers collection
+					const newCustomer = {
+						firstName: dropOff_data.customer_firstName,
+						lastName: dropOff_data.customer_lastName,
+						address: {
+							street: dropOff_data.customer_address.street,
+							city: dropOff_data.customer_address.city,
+							state: dropOff_data.customer_address.state,
+							zip: dropOff_data.customer_address.zip
+						},
+						email: dropOff_data.customer_email,
+						phone: dropOff_data.customer_phone,
+						date_registered: dropOff_data.date,
+					}
+
+					let create_customer_promise = undefined // Variable containing the function for creating a doc in our database
+
+					if(anyNewCustomer == true) {
+						create_customer_promise = db.createDoc('Customers', newCustomer);
+					};
+
+					// Finally we are going to perform database functions
+					const promise_array = Promise.all ([
+						db.updateById('DropOffs', dropOff_id, dropOff_ticket_update),
+						create_customer_promise
+					]);
+
+					return promise_array;
+				})
+				.then(resp => {
+					// Now that we have finished dealing with the logic behind dropoffs, we need to look for a transaction to add this to, since there is can only be one 'in progress' transaction, we should query out database for such
+					const query = {
+						"status": "in progress"
+					};
+					return db.search('Transactions', query)
+				})
+				.then(resp => {
+					const num_found = resp.metadata.found;
+
+					// Check if there is any 'in progress' transaction
+					if(num_found == 1) {
+						console.log("EXISTING TRANSACTION FOUND");
+						const current_transaction = resp.docs[0];
+
+						// Add Dropff to transaction
+						const sales = current_transaction.sales;
+						sales.push(dropOff_data);
+
+						// Update the transaction
+						const transaction_id = current_transaction._id;
+
+						// Update database
+						return db.updateById('Transactions', transaction_id, current_transaction)
+						.then(resp => {
+
+							// Now that the item has been added, we should send a success message to the client-side
+							json_response["request_status"] = "success";
+							return res.json( json_response );
+						})
+					}
+
+					// Otherwise, create a transaction
+					else {
+						console.log("NO TRANSACTION FOUND, TRANSACTION CREATED");
+						const new_transaction = {};
+
+						// Update status to 'in progress'
+						new_transaction["status"] = "in progress";
+
+						// Add date to transaction
+						new_transaction["date"] = Date.now();
+
+						// Update the database
+						return db.createDoc('Transactions', new_transaction)
+						.then(resp => {
+							const current_transaction = resp.doc;
+							const transaction_id = current_transaction._id;
+
+							// Add Dropoff to this transaction
+							const sales = current_transaction.sales;
+							sales.push( dropOff_data );
+
+							// Update the database
+							return db.updateById('Transactions', transaction_id, current_transaction)
+							.then(resp => {
+
+								// Now that the item has been added, and a new transaction has been created, we should send a success message to the client-side
+								json_response["request_status"] = "success";
+								return res.json( json_response );
+							})
+						})
+					}
+				})
+				.catch(err => {
+					console.log(err);
+
+					json_response["request_status"] = "error";
+					return res.json( json_response );
+				});
+			};
 		}
 	}
 }

@@ -74,5 +74,6 @@ app.get('/customers/list', customersController.getCustomersList);
 // Transactions API
 app.post('/transaction/cart/add', transactionController.postAddToCart);
 app.get('/transaction/cart/get', transactionController.getCurrentTransaction);
+app.post('/transaction/cart/clear', transactionController.postClearTransaction);
 
 module.exports = app;

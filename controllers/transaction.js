@@ -38,7 +38,7 @@ exports.postAddToCart = (req, res) => {
 			/*
 				SOAP
 			*/
-			if(json["item_type"] == "soap" && "id" in data) {
+			if(json["item_type"] == "soap" && "id" in json["data"]) {
 
 				const data = json["data"];
 				const soapId = data["id"];
@@ -297,6 +297,7 @@ exports.getCurrentTransaction = (req, res) => {
 		if(num_found == 1) {
 			console.log("EXISTING TRANSACTION FOUND");
 			const current_transaction = resp.docs[0];
+			const transaction_id = current_transaction._id;
 
 			// We want to send back the sales field of the transaction
 			const sales = current_transaction.sales;
@@ -309,6 +310,10 @@ exports.getCurrentTransaction = (req, res) => {
 			}
 
 			json_response["request_status"] = "success";
+
+			// Add the id to the JSON response
+			json_response["transaction_id"] = transaction_id;
+
 			// Send the json response to the client
 			return res.json( json_response );
 		}
@@ -321,6 +326,40 @@ exports.getCurrentTransaction = (req, res) => {
 	})
 
 };
+
+/*
+	POST /transaction/cart/clear
+	Clears all items from cart
+*/
+exports.postClearTransaction = (req, res) => {
+
+	const json = req.body;
+
+	const json_response = {};
+	json_response["msg_type"] = "server_response";
+
+	if("data" in json && json["msg_type"] == "server_request") {
+
+		console.log("GOT REQUEST");
+
+		if(json["command"] == "empty") {
+
+			const transaction_id = json["data"];
+
+			return db.removeById("Transactions", transaction_id)
+			.then(resp => {
+
+				json_response["request_status"] = "success";
+				return res.json( json_response );
+			})
+			.catch(err => {
+
+				json_response["request_status"] = "error";
+				return res.json( json_response );
+			})
+		}
+	}
+}
 
 exports.postCheckoutTransaction = (req, res) => {
 

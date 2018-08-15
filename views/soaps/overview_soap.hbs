@@ -44,34 +44,34 @@
 					</legend>
 				</strong>
 
-				<!-- Cart -->
-				<div class="toggle-transparent toggle-bordered-full clearfix">
-					<div class="toggle active">
-						<div class="toggle-content">
-
-							<div id="ajaxCartItems">
-							</div>
-							<hr />
-
-						</div>
-					</div>
-				</div>
-
-				<hr />
-
 				<!-- Total -->
 				<div class="toggle-transparent toggle-bordered-full clearfix">
 					<div class="toggle active">
 						<div class="toggle-content">
 
 							<span class="clearfix">
-								<span class="pull-right size-20">HARCODED PRICE</span>
+								<span class="pull-right size-20">
+									<div id="finalPrice"></div>
+								</span>
 								<strong class="pull-left">TOTAL:</strong>
 							</span>
 
 							<hr />
 
 							<button class="btn btn-primary btn-lg btn-block size-15"><i class="fa fa-mail-forward"></i> Checkout</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Cart -->
+				<div class="toggle-transparent toggle-bordered-full clearfix">
+					<div class="toggle active">
+						<div class="toggle-content">
+
+							<div id="ajaxCartItems"></div>
+
+							<hr />
+
 						</div>
 					</div>
 				</div>
@@ -110,15 +110,34 @@
 								const name = resp_data[i].name;
 								const price = resp_data[i].price;
 
+								// We want to render the price in human readable data
+								const USD = (price/100);
+
 								// Fill in the ui
-								$("#ajaxCartItems").append(`
-									<p>
+								$("#ajaxCartItems").append(
+									`<p>
 										${name}
-										${price}
-									</p>
-									`
-								)
+										${USD}
+									</p>`
+								);
 							}
+
+							// We also need to get the total price of everything
+							let price;
+							let USD;
+							let finalPrice = 0;
+
+							for(let i=0; i<resp_data.length; i++) {
+								finalPrice += resp_data[i].price;
+							};
+
+							// Add the price to the UI
+							finalPrice = (finalPrice/100);
+							$("#finalPrice").append(
+								`<p>
+									${finalPrice}
+								</p>`
+							)
 						}
 					}
 				}

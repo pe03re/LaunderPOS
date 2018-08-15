@@ -88,6 +88,9 @@ exports.postAddToCart = (req, res) => {
 						// Update status to 'in progress'
 						new_transaction["status"] = "in progress";
 
+						// Add date to transaction
+						new_transaction["date"] = Date.now();
+
 						// Update the database
 						return db.createDoc('Transactions', new_transaction)
 						.then(resp => {

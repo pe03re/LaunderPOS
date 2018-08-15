@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 **/
 
 const TransactionSchema = new mongoose.Schema({
-	transaction_num: Number, // Starts at 1
 	date: String,
 	total_price: Number,
 	sales: [], // Array that stores what sale object is added as part of the transaction,

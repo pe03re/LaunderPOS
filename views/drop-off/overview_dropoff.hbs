@@ -1,0 +1,200 @@
+<section style="padding-top: 15px">
+	<div class="container">
+		<div class="row">
+
+			<!-- Drop off Form-->
+			<div class="col-12 col-md-8">
+				<strong>
+					<legend>
+						Drop-off Information
+					</legend>
+				</strong>
+				<div class="row">
+					<div class="form-group">
+						<div class="col-md-3">
+							<label>Price</label>
+							<input class="form-control" id="price" >
+						</div>
+						<div class="col-md-3">
+							<label>Bag Color</label>
+							<input class="form-control" id="bag_color" type="text">
+						</div>
+						<div class="col-md-3">
+							<label>Status</label>
+							<select class="form-control" id="status">
+								<option value="paid">
+									Paid
+								</option>
+								<option value="hold">
+									Hold
+								</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<hr />
+
+				<strong>
+					<legend>
+						Customer Information
+					</legend>
+				</strong>
+				<div class="row">
+					<div class="form-group">
+						<div class="col-md-3">
+							<label>First Name</label>
+							<input class="form-control" id="firstName" type="text" />
+						</div>
+						<div class="col-md-3">
+							<label>Last Name</label>
+							<input class="form-control" id="lastName" type="text" />
+						</div>
+						<div class="col-md-3">
+							<label>Phone Number</label>
+							<input class="form-control" id="phone" type="text" />
+						</div>
+						<div class="col-md-3">
+							<label>Email</label>
+							<input class="form-control" id="email" type="email" />
+						</div>
+					</div>
+				</div>
+
+				<hr />
+
+				<strong>
+					<legend>
+						Customer Address
+					</legend>
+				</strong>
+				<div class="row">
+					<div class="form-group">
+						<div class="col-md-3">
+							<label>Street</label>
+							<input class="form-control" id="street" type="text" />
+						</div>
+						<div class="col-md-3">
+							<label>City</label>
+							<input class="form-control" id="city" type="text" />
+						</div>
+						<div class="col-md-3">
+							<label>State</label>
+							<input class="form-control" id="state" type="text" />
+						</div>
+						<div class="col-md-3">
+							<label>Zip</label>
+							<input class="form-control" id="zip" type="text" />
+						</div>
+					</div>
+				</div>
+				<hr />
+				<button class="btn btn-primary">Add</button>
+			</div>
+
+			<!-- Checkout -->
+			<div class="col-12 col-md-4">
+				<strong>
+					<legend>
+						Checkout
+					</legend>
+				</strong>
+
+				<!-- Total -->
+				<div class="toggle-transparent toggle-bordered-full clearfix">
+					<div class="toggle active">
+						<div class="toggle-content">
+							<span class="clearfix">
+								<span class="pull-right size-20">
+									<div id="finalPrice"></div>
+								</span>
+								<strong class="pull-left">TOTAL:</strong>
+							</span>
+							<hr />
+							<button class="btn btn-primary btn-lg btn-block size-15"><i class="fa fa-mail-forward"></i> Checkout</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Cart -->
+				<div class="toggle-transparent toggle-bordered-full clearfix">
+					<div class="toggle active">
+						<div class="toggle-content">
+							<div id="ajaxCartItems"></div>
+							<hr />
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- JS -->
+<script>
+	// Load Cart Items
+	$.ajax({
+		url: "/transaction/cart/get",
+		method: 'GET',
+		contentType: "application/json",
+		success: function(data) {
+
+			// Check the msg_type
+			if("msg_type" in data && data["msg_type"] == "server_response") {
+
+				// On Error
+				if("request_status" in data && data["request_status"] == "error") {
+					const err_msg = data["data"];
+					$("#ajaxCartItems").append(`<p>${err_msg}</p>`);
+				}
+
+				// On Success
+				else {
+					if("request_status" in data && data["request_status"] == "success") {
+
+						// Loop through the data in json returned, and append each to ajaxCartItems
+						const resp_data = data["data"];
+						for(let i=0; i<resp_data.length; i++) {
+							const name = resp_data[i].name;
+							const price = resp_data[i].price;
+
+							// We want to render the price in human readable data
+							const USD = (price/100);
+
+							// Fill in the ui
+							$("#ajaxCartItems").append(
+								`<p>
+									${name}
+									${USD}
+								</p>`
+							);
+						}
+
+						// We also need to get the total price of everything
+						let price;
+						let USD;
+						let finalPrice = 0;
+
+						for(let i=0; i<resp_data.length; i++) {
+							finalPrice += resp_data[i].price;
+						};
+
+						// Add the price to the UI
+						finalPrice = (finalPrice/100);
+						$("#finalPrice").append(
+							`<p>
+								${finalPrice}
+							</p>`
+						)
+					}
+				}
+			}
+		},
+		error: function(err) {
+			console.log(err);
+			alert("GET: Failed to contact server.");
+		}
+	});
+
+</script>

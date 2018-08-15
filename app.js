@@ -66,8 +66,7 @@ app.post('/inventory/soap', soapController.postCreateSoap);
 app.post('/soap/update/:soapId', soapController.updateSoaps);
 
 // DropOffs
-app.get('/drop-off/create', dropOffController.getDropOffForm);
-app.post('/drop-off/create', dropOffController.postCreateDropOff);
+app.get('/overview/dropoff', dropOffController.getDropOffForm);
 
 // Customers
 app.get('/customers/list', customersController.getCustomersList);

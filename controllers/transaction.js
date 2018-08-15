@@ -27,11 +27,9 @@ exports.postAddToCart = (req, res) => {
 
 	// Check to make sure the data is in the json, and that the msg_type is "server_request"
 	if("data" in json && json["msg_type"] == "server_request") {
-		// Set data as variable
-		const data = json["data"];
 
 		// Check for item_type and id
-		if("item_type" in json && "id" in data) {
+		if("item_type" in json) {
 			/*
 				NOTE:
 				There will be an id sent each time through the ajax call, we need checks for each type of item our store uses
@@ -40,8 +38,9 @@ exports.postAddToCart = (req, res) => {
 			/*
 				SOAP
 			*/
-			if(json["item_type"] == "soap") {
+			if(json["item_type"] == "soap" && "id" in data) {
 
+				const data = json["data"];
 				const soapId = data["id"];
 				let soap_data;
 
@@ -129,7 +128,7 @@ exports.postAddToCart = (req, res) => {
 				1.) We need to add it to the 'DropOffs' collection, and if the customer is not in our database, we need to add the object to 'Customers' as well.
 				2.) After updating our database, we will also need to add it to the our current 'in progress' transaction too
 			*/
-			if(json["item_type"] == "drop-off") {
+			if(json["item_type"] == "dropoff") {
 
 				const new_dropoff_data = json["data"];
 				let dropoff_data;

@@ -1,0 +1,14 @@
+NOTES FOR XIN FOR FUTURE DEVELOPMENTS
+
+Soap (barcode reader) - Add by touch , Admins can update inventory
+
+Dropoff (reciept printer)
+
+Soaps have two barcodes, primary and secondary
+
+
+TODO:
+'Hold' dropoffs need to be stored in our inventory until their receipt has been scanned.
+
+'Dropoff' overview menu should be simiplified
+user inputs phone > database lookup > if found: fill in form > else: redirect to form

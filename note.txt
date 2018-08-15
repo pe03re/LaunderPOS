@@ -1,7 +1,0 @@
-NOTES FOR XIN FOR FUTURE DEVELOPMENTS
-
-Soap (barcode reader) - Add by touch , Admins can update inventory
-
-Dropoff (reciept printer)
-
-Soaps have two barcodes, primary and secondary

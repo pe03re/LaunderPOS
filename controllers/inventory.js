@@ -7,8 +7,8 @@
 */
 
 const db = require('../utils/db');
-const Inventory = require('../models/Inventory');
 const Soap = require('../models/Soap');
+const DropOffs = require('../models/Drop-off');
 
 
 /*
@@ -33,14 +33,14 @@ exports.getInventory = (req, res) => {
 
 	// Query database for inventory items
 	return Promise.all([
-		db.search('Inventory', {})
+		db.search('Soap', {}),
+		db.search('DropOffs', {})
 	])
 	.then(resp => {
-		const inventory_data = resp[0].docs;
 
 		// Arrays of items
-		const inventory_soaps = inventory_data.soaps;
-		const inventory_dropOffs = inventory_data.dropOffs;
+		const inventory_soaps = resp[0].docs;
+		const inventory_dropOffs = resp[1].docs;
 
 		// Return json_response
 		json_response["status"] = "success";
@@ -51,7 +51,7 @@ exports.getInventory = (req, res) => {
 	.catch(err => {
 		console.log(err);
 		json_response["status"] = "error";
-		json_response["err_data"] = err;
+		json_response["status_msg"] = "There has been an server error";
 		return res.json( json_response );
 	})
 }
@@ -102,29 +102,27 @@ exports.postAddInventory = (req, res) => {
 
 				// We will then check if soapExists is true, if it is then we will redirect the user to the inventory page with an error message
 				if(soapExists == true) {
-					req.flash('errors', { msg: 'Soap already exists!'});
 					json_response["status"] = "error";
+					json_response["status_msg"] = "Soap already exists!";
 					return res.json( json_response );
 
 					// Otherwise, we proceed with adding the soap to our database, and adding it to our inventory as well
 				} else {
-					return Promise.all([
-						db.createDoc('Soap', newSoapObj),
-						db.createDoc('Inventory', {})
-					])
+					return db.createDoc('Soap', newSoapObj)
 					.then(resp => {
 						const new_soap = resp.doc;
 
-						req.flash('success', { msg: 'Soap has been successfully added!'});
 						json_response["status"] = "success";
+						json_response["status_msg"] = "Soap added!";
 						return res.json( json_response );
 					})
 				}
 			})
 			.catch(err => {
 				console.log(err);
-				req.flash('errors', { msg: 'Error in adding soap. Please try again'});
+
 				json_response["status"] = "error";
+				json_response["status_msg"] = "There has been an server error";
 				return res.json( json_response );
 			})
 		}

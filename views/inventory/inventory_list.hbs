@@ -17,13 +17,7 @@
 						</th>
 					</tr>
 				</thead>
-				<tbody>
-					<tr>
-						<td id="soap_name"></td>
-						<td id="soap_USD"></td>
-						<td id="soap_quantity"></td>
-						<td id="soap_btn"></td>
-					</tr>
+				<tbody id="soap_data">
 				</tbody>
 			</table>
 		</div>
@@ -74,16 +68,7 @@
 						</th>
 					</tr>
 				</thead>
-				<tbody>
-					<tr>
-						<td id="ticket_number"></td>
-						<td id="bag_color"></td>
-						<td id="date"></td>
-						<td id="name"></td>
-						<td id="phone"></td>
-						<td id="price"></td>
-						<td id="dropOff_btn"></td>
-					</tr>
+				<tbody id="dropoff_data">
 				</tbody>
 			</table>
 		</div>
@@ -111,10 +96,23 @@
 
 							// Loop through each soap
 							for(let i=0; i<all_soaps.length; i++) {
-								$("#soap_name").append(all_soaps[i].name);
-								$("#soap_USD").append(`<input type="number" value="${(all_soaps[i].price)/100}" style="width: 65px"/>`);
-								$("#soap_quantity").append(`<input type="number" value="${all_soaps[i].quantity}" style="width: 50px"/>`);
-								$("#soap_btn").append(`<button class="updateBtn btn btn-primary" data-value=${all_soaps[i]._id}>Update</button>`);
+								$("#soap_data").append(`
+									<tr>
+										<td>
+											${all_soaps[i].name}
+										</td>
+										<td>
+											<input type="number" value="${(all_soaps[i].price)/100}" style="width: 65px"/>
+										</td>
+										<td>
+											<input type="number" value="${all_soaps[i].quantity}" style="width: 50px"/>
+										</td>
+										<td>
+											<button class="updateBtn btn btn-primary" data-value=${all_soaps[i]._id}>Update</button>
+										</td>
+									</tr>
+									`
+								);
 							}
 						}
 
@@ -124,25 +122,43 @@
 
 							// Loop through each dropoff
 							for(let i=0; i<all_dropOffs.length; i++) {
-								$("#ticket_number").append(all_dropOffs[i].ticket_number);
-								$("#bag_color").append(all_dropOffs[i].bag_color);
-								$("#date").append( all_dropOffs[i].date );
-								$("#name").append( (all_dropOffs[i].customer_firstName + " " + all_dropOffs[i].customer_lastName) );
-								$("#phone").append(all_dropOffs[i].phone);
-								$("#price").append( (all_dropOffs[i].price)/100 );
-								$("#dropOff_btn").append(`<button class="checkoutBtn btn btn-primary" data-value=${all_dropOffs[i]._id}>Checkout</button>`);
+								$("#dropoff_data").append(`
+									<tr>
+										<td>
+											${all_dropOffs[i].ticket_number}
+										</td>
+										<td>
+											${all_dropOffs[i].bag_color}
+										</td>
+										<td>
+											${all_dropOffs[i].date}
+										</td>
+										<td>
+											 ${(all_dropOffs[i].customer_firstName + " " + all_dropOffs[i].customer_lastName) }
+										</td>
+										<td>
+											${all_dropOffs[i].phone}
+										</td>
+										<td>
+											${(all_dropOffs[i].price)/100}
+										</td>
+										<td>
+											<button class="checkoutBtn btn btn-primary" data-value=${all_dropOffs[i]._id}>Checkout</button>
+										</td>
+									</tr>
+									`)
+								}
 							}
-						}
 					}
 
 					// Error
 					if("status" in data && data["status"] == "error") {
-						alert(data["err_data"]);
+						alert(data["status_msg"]);
 					}
 				}
 			},
 			error: function(err) {
-				alert("Error in getting inventory");;
+				alert("GET: Error getting inventory");;
 			}
 		})
 
@@ -170,11 +186,12 @@
 
 					// On Error
 					if( "status" in data && data["status"] == "error" ) {
-						alert("Error in adding soap!");
+						alert(data["status_msg"]);
 
 					// On Success
 					} else {
 						if( "status" in data && data["status"] == "success" ) {
+							alert(data["status_msg"])
 							window.location.href = "/inventory";
 						}
 					}

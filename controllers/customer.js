@@ -2,8 +2,8 @@ const db = require('../utils/db');
 const Customers = require('../models/Soap');
 
 /*
-	GET List of Customers
-	/customers/all
+	GET /customers/all
+	Get list of all customers
 */
 exports.getCustomersList = (req, res) => {
 

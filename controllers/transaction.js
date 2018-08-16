@@ -8,6 +8,7 @@
 	1.) GET, /transactions/get, Fetch database for 'in progress', 'done', the UI for this needs to appear on all pages that allows users to add items
 	2.) POST, /transactions/checkout, Updates the database, and completes the fields of the object for transaction
 */
+
 const db = require('../utils/db');
 const Customers = require('../models/Soap');
 const DropOffs = require('../models/Drop-off');
@@ -131,8 +132,8 @@ exports.postAddToCart = (req, res) => {
 			if(json["item_type"] == "dropoff") {
 
 				const new_dropoff_data = json["data"];
-				let dropoff_data;
-				let dropoff_id;
+				let dropOff_data;
+				let dropOff_id;
 
 				// Create the dropoff
 				return db.createDoc('DropOffs', new_dropoff_data)

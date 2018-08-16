@@ -55,6 +55,7 @@ const soapController = require('./controllers/soap');
 const dropOffController = require('./controllers/drop-off');
 const customersController = require('./controllers/customer');
 const transactionController = require('./controllers/transaction');
+const inventoryController = require('./controllers/inventory');
 
 // Static
 app.get('/', staticController.getHome);
@@ -75,5 +76,10 @@ app.get('/customers/list', customersController.getCustomersList);
 app.post('/transaction/cart/add', transactionController.postAddToCart);
 app.get('/transaction/cart/get', transactionController.getCurrentTransaction);
 app.post('/transaction/cart/clear', transactionController.postClearTransaction);
+
+// Inventory API
+app.get('/inventory', inventoryController.getInventoryView);
+app.get('/inventory/get', inventoryController.getInventory);
+app.post('/inventory/add', inventoryController.postAddInventory);
 
 module.exports = app;

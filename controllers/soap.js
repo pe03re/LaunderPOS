@@ -20,6 +20,7 @@ exports.getSoapOverview = (req, res) => {
 		})
 	})
 }
+
 /*
 	GET /inventory/soap
 	List all Soaps in Inventory

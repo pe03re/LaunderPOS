@@ -34,7 +34,7 @@ exports.getInventory = (req, res) => {
 	// Query database for inventory items
 	return Promise.all([
 		db.search('Soap', {}),
-		db.search('DropOffs', {})
+		db.search('DropOffs', { "status": "hold" }) // Only query hold items
 	])
 	.then(resp => {
 

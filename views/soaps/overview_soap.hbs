@@ -97,14 +97,14 @@
 				if("msg_type" in data && data["msg_type"] == "server_response") {
 
 					// On Error
-					if("request_status" in data && data["request_status"] == "error") {
+					if("status" in data && data["status"] == "error") {
 						const err_msg = data["data"];
 						$("#ajaxCartItems").append(`<p>${err_msg}</p>`);
 					}
 
 					// On Success
 					else {
-						if("request_status" in data && data["request_status"] == "success") {
+						if("status" in data && data["status"] == "success") {
 
 							// Loop through the data in json returned, and append each to ajaxCartItems
 							const resp_data = data["data"];
@@ -190,14 +190,14 @@
 				success: function(data) {
 
 					// On Error
-					if( "request_status" in data && data["request_status"] == "error" ) {
+					if( "status" in data && data["status"] == "error" ) {
 						if( "error" in data) {
 							alert(data["error"]);
 						}
 
 					// On Success
 					} else {
-						if( "request_status" in data && data["request_status"] == "success" ) {
+						if( "status" in data && data["status"] == "success" ) {
 							window.location.href = "/overview/soap";
 						}
 					}
@@ -226,14 +226,14 @@
 				success: function(data) {
 
 					// On Error
-					if( "request_status" in data && data["request_status"] == "error" ) {
+					if( "status" in data && data["status"] == "error" ) {
 						if( "error" in data) {
 							alert(data["error"]);
 						}
 
 					// On Success
 					} else {
-						if( "request_status" in data && data["request_status"] == "success" ) {
+						if( "status" in data && data["status"] == "success" ) {
 							window.location.href = "/overview/soap";
 						}
 					}

@@ -122,6 +122,11 @@
 
 							// Loop through each dropoff
 							for(let i=0; i<all_dropOffs.length; i++) {
+
+								// For date processing
+								let d = new Date(all_dropOffs[i].date);
+								let mmddyyyy = d.toLocaleDateString();
+
 								$("#dropoff_data").append(`
 									<tr>
 										<td>
@@ -131,13 +136,13 @@
 											${all_dropOffs[i].bag_color}
 										</td>
 										<td>
-											${all_dropOffs[i].date}
+											${mmddyyyy}
 										</td>
 										<td>
 											 ${(all_dropOffs[i].customer_firstName + " " + all_dropOffs[i].customer_lastName) }
 										</td>
 										<td>
-											${all_dropOffs[i].phone}
+											${all_dropOffs[i].customer_phone}
 										</td>
 										<td>
 											${(all_dropOffs[i].price)/100}

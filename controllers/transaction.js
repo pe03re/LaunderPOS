@@ -76,7 +76,7 @@ exports.postAddToCart = (req, res) => {
 						.then(resp => {
 
 							// Now that the item has been added, we should send a success message to the client-side
-							json_response["request_status"] = "success";
+							json_response["status"] = "success";
 							return res.json( json_response );
 						})
 					}
@@ -90,7 +90,7 @@ exports.postAddToCart = (req, res) => {
 						new_transaction["status"] = "in progress";
 
 						// Add date to transaction
-						new_transaction["date"] = Date.now();
+						new_transaction["date"] = new Date();
 
 						// Update the database
 						return db.createDoc('Transactions', new_transaction)
@@ -107,7 +107,7 @@ exports.postAddToCart = (req, res) => {
 							.then(resp => {
 
 								// Now that the item has been added, and a new transaction has been created, we should send a success message to the client-side
-								json_response["request_status"] = "success";
+								json_response["status"] = "success";
 								return res.json( json_response );
 							})
 						})
@@ -116,7 +116,7 @@ exports.postAddToCart = (req, res) => {
 				.catch(err => {
 					console.log(err);
 
-					json_response["request_status"] = "error";
+					json_response["status"] = "error";
 					return res.json( json_response );
 				})
 			};
@@ -219,7 +219,11 @@ exports.postAddToCart = (req, res) => {
 
 						// Add Dropff to transaction
 						const sales = current_transaction.sales;
-						sales.push(dropOff_data);
+
+						// Check for the status of the dropoff, if the dropoff is "hold" we dont add it to the transaction, if it is "paid" then we add it to the transaction
+						if(dropOff_data["status"] == "paid") {
+							sales.push(dropOff_data);
+						};
 
 						// Update the transaction
 						const transaction_id = current_transaction._id;
@@ -229,7 +233,7 @@ exports.postAddToCart = (req, res) => {
 						.then(resp => {
 
 							// Now that the item has been added, we should send a success message to the client-side
-							json_response["request_status"] = "success";
+							json_response["status"] = "success";
 							return res.json( json_response );
 						})
 					}
@@ -243,7 +247,7 @@ exports.postAddToCart = (req, res) => {
 						new_transaction["status"] = "in progress";
 
 						// Add date to transaction
-						new_transaction["date"] = Date.now();
+						new_transaction["date"] = new Date();
 
 						// Update the database
 						return db.createDoc('Transactions', new_transaction)
@@ -253,14 +257,18 @@ exports.postAddToCart = (req, res) => {
 
 							// Add Dropoff to this transaction
 							const sales = current_transaction.sales;
-							sales.push( dropOff_data );
 
+							// Check for the status of the dropoff, if the dropoff is "hold" we dont add it to the transaction, if it is "paid" then we add it to the transaction
+							if(dropOff_data["status"] == "paid") {
+								sales.push(dropOff_data);
+							};
+							
 							// Update the database
 							return db.updateById('Transactions', transaction_id, current_transaction)
 							.then(resp => {
 
 								// Now that the item has been added, and a new transaction has been created, we should send a success message to the client-side
-								json_response["request_status"] = "success";
+								json_response["status"] = "success";
 								return res.json( json_response );
 							})
 						})
@@ -269,7 +277,8 @@ exports.postAddToCart = (req, res) => {
 				.catch(err => {
 					console.log(err);
 
-					json_response["request_status"] = "error";
+					json_response["status"] = "error";
+					json_response["status_msg"] = "Error in server";
 					return res.json( json_response );
 				});
 			};
@@ -310,7 +319,7 @@ exports.getCurrentTransaction = (req, res) => {
 				json_response["data"].push( sales[i] );
 			}
 
-			json_response["request_status"] = "success";
+			json_response["status"] = "success";
 
 			// Add the id to the JSON response
 			json_response["transaction_id"] = transaction_id;
@@ -320,7 +329,7 @@ exports.getCurrentTransaction = (req, res) => {
 		}
 		// Otherwise, we send the data to be fill into the client ui like "Cart is Empty.";
 		else {
-			json_response["request_status"] = "error";
+			json_response["status"] = "error";
 			json_response["data"] = "Cart is Empty";
 			return res.json( json_response );
 		}
@@ -343,22 +352,20 @@ exports.postClearTransaction = (req, res) => {
 
 		console.log("GOT REQUEST");
 
-		if(json["command"] == "empty") {
+		const transaction_id = json["data"];
 
-			const transaction_id = json["data"];
+		return db.removeById("Transactions", transaction_id)
+		.then(resp => {
 
-			return db.removeById("Transactions", transaction_id)
-			.then(resp => {
+			json_response["status"] = "success";
+			return res.json( json_response );
+		})
+		.catch(err => {
 
-				json_response["request_status"] = "success";
-				return res.json( json_response );
-			})
-			.catch(err => {
-
-				json_response["request_status"] = "error";
-				return res.json( json_response );
-			})
-		}
+			json_response["status"] = "error";
+			json_response["status_msg"] = "Error in Server";
+			return res.json( json_response );
+		})
 	}
 }
 

@@ -156,14 +156,14 @@
 				if("msg_type" in data && data["msg_type"] == "server_response") {
 
 					// On Error
-					if("request_status" in data && data["request_status"] == "error") {
+					if("status" in data && data["status"] == "error") {
 						const err_msg = data["data"];
 						$("#ajaxCartItems").append(`<p>${err_msg}</p>`);
 					}
 
 					// On Success
 					else {
-						if("request_status" in data && data["request_status"] == "success") {
+						if("status" in data && data["status"] == "success") {
 
 							// Loop through the data in json returned, and append each to ajaxCartItems
 							const resp_data = data["data"];
@@ -236,7 +236,7 @@
 			// Prepare Dropoff Data to be passed into server
 			const dropOff_data = {};
 			dropOff_data["status"] = $("#status").val();
-			dropOff_data["date"] = Date.now();
+			dropOff_data["date"] = new Date();
 			dropOff_data["customer_firstName"] = $("#firstName").val();
 			dropOff_data["customer_lastName"] = $("#lastName").val();
 			dropOff_data["customer_email"] = $("#email").val();
@@ -267,14 +267,14 @@
 				success: function(data) {
 
 					// On Error
-					if( "request_status" in data && data["request_status"] == "error" ) {
+					if( "status" in data && data["status"] == "error" ) {
 						if( "error" in data) {
-							alert(data["error"]);
+							alert(data["status_msg"]);
 						}
 
 					// On Success
 					} else {
-						if( "request_status" in data && data["request_status"] == "success" ) {
+						if( "status" in data && data["status"] == "success" ) {
 							window.location.href = "/overview/dropoff";
 						}
 					}
@@ -291,7 +291,6 @@
 
 			// Prepare JSON request
 			const json_request = {};
-			json_request["command"] = "empty";
 			json_request["data"] = $("#transaction_id").val();
 			json_request["msg_type"] = "server_request";
 
@@ -303,14 +302,14 @@
 				success: function(data) {
 
 					// On Error
-					if( "request_status" in data && data["request_status"] == "error" ) {
+					if( "status" in data && data["status"] == "error" ) {
 						if( "error" in data) {
-							alert(data["error"]);
+							alert(data["status_msg"]);
 						}
 
 					// On Success
 					} else {
-						if( "request_status" in data && data["request_status"] == "success" ) {
+						if( "status" in data && data["status"] == "success" ) {
 							window.location.href = "/overview/dropoff";
 						}
 					}

@@ -128,3 +128,46 @@ exports.postAddInventory = (req, res) => {
 		}
 	}
 }
+
+/*
+	POST /inventory/soap/update
+	Updates soap quantity
+*/
+exports.postUpdateSoapInventory = (req, res) => {
+
+	const json = req.body;
+	const json_response = {};
+	json_response["msg_type"] = "server_response";
+
+	if("msg_type" in json && json["msg_type"] == "server_request") {
+		if("data" in json) {
+			const data = json["data"];
+
+			if("id" in data && "quantity" in data && "price" in data) {
+				const id = data["id"];
+				const new_quantity = data["quantity"];
+				const new_price = data["price"];
+
+				const update = {
+					quantity: new_quantity,
+					price: new_price
+				};
+
+				return db.updateById('Soap', id, update)
+				.then(resp => {
+
+					console.log(resp.doc);
+
+					json_response["status"] = "success";
+					return res.json ( json_response );
+				})
+				.catch(err => {
+
+					json_response["status"] = "error";
+					json_response["status_msg"] = "Server error";
+					return res.json ( json_response );
+				})
+			}
+		}
+	}
+}

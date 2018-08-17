@@ -81,5 +81,6 @@ app.post('/transaction/cart/clear', transactionController.postClearTransaction);
 app.get('/inventory', inventoryController.getInventoryView);
 app.get('/inventory/get', inventoryController.getInventory);
 app.post('/inventory/add', inventoryController.postAddInventory);
+app.post('/inventory/update/soap', inventoryController.postUpdateSoapInventory);
 
 module.exports = app;

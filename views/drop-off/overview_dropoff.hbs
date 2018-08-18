@@ -142,10 +142,27 @@
 	</div>
 </section>
 
+<!-- Modal -->
+<div class="modal fade" id="dropoffModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Customer Phone Lookup</h5>
+			</div>
+			<div class="modal-body">
+				<input id="customer_phone_lookup" class="form-control" />
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button id="dropoffModal_submit" type="button" class="btn btn-primary">Lookup</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <!-- JS -->
 <script>
 	$(document).ready(function() {
-
 
 		// Load Cart Items
 		$.ajax({
@@ -226,6 +243,67 @@
 			}
 		});
 
+		// Show the modal after the page loads
+		$(window).on('load', function() {
+			$("#dropoffModal").modal("show");
+		});
+
+		// On modal submit
+		$("#dropoffModal_submit").click(function() {
+			const phone = $("#customer_phone_lookup").val();
+			ajaxPhoneLookup(phone);
+
+			// Hide Modal after submitting
+			$("#dropoffModal").modal("hide");
+		});
+
+		// Post phone number to server for a look up
+		function ajaxPhoneLookup(phone) {
+
+			// JSON Request
+			const json_request = {};
+			json_request["msg_type"] = "server_request";
+			json_request["phone"] = phone;
+
+			// Post to server via Ajax
+			$.ajax({
+				url: '/customers/phone/lookup',
+				method: 'POST',
+				contentType: "application/json",
+				data: JSON.stringify( json_request ),
+				success: function(data) {
+
+					// On Error
+					if( "status" in data && data["status"] == "error" ) {
+							alert("No customer records found!");
+					}
+
+					// On Success
+					else {
+						if( "status" in data && data["status"] == "success" ) {
+							if("customer_data" in data) {
+
+								const customer_data = data["customer_data"];
+
+								// With the customer data pulled from the database, let us fill in the page
+								$("#firstName").val(customer_data.firstName);
+								$("#lastName").val(customer_data.lastName);
+								$("#phone").val(customer_data.phone);
+								$("#email").val(customer_data.email);
+								$("#street").val(customer_data.address.street);
+								$("#city").val(customer_data.address.city);
+								$("#state").val(customer_data.address.state);
+								$("#zip").val(customer_data.address.zip);
+							}
+						}
+					}
+				},
+				error: function(err) {
+					console.log(err);
+					alert("POST: Failed to contact server.");
+				}
+			});
+		};
 
 		// Add Dropoff to database, and cart
 		$("#addBtn").click(function() {
@@ -252,8 +330,6 @@
 			};
 			dropOff_data["price"] = $("#price").val();
 			dropOff_data["bag_color"] = $("#bag_color").val();
-
-			console.log(dropOff_data);
 
 			// Prepare JSON request
 			const json_request = {};

@@ -68,6 +68,7 @@ app.get('/overview/dropoff', dropOffController.getDropOffForm);
 
 // Customers
 app.get('/customers/list', customersController.getCustomersList);
+app.post('/customers/phone/lookup', customersController.postCheckCustomerPhone);
 
 // Transactions API
 app.post('/transaction/cart/add', transactionController.postAddToCart);

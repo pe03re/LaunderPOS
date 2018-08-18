@@ -39,3 +39,43 @@ exports.getCustomersList = (req, res) => {
 		return res.redirect('/customers/list');
 	})
 }
+
+/*
+	POST /customers/phone/lookup
+	Ajax will send a request that we will then lookup
+*/
+exports.postCheckCustomerPhone = (req, res) => {
+
+	const json = req.body;
+	const json_response = {};
+	json_response["msg_type"] = "server_response";
+
+	if("msg_type" in json && json["msg_type"] == "server_request") {
+		if("phone" in json) {
+
+			const phone_num = json["phone"];
+			const query = { "phone": phone_num };
+
+			return db.search("Customers", query)
+			.then(resp => {
+				// Data checking, we want to return the user a message is nothing is found
+				if(resp.metadata.found == 0) {
+					json_response["status"] = "error";
+					return res.json( json_response );
+				} else {
+					const customer_data = resp.docs[0];
+
+					json_response["status"] = "success";
+					json_response["customer_data"] = customer_data;
+					return res.json( json_response );
+				}
+			})
+			.catch(err => {
+				console.log(err);
+
+				json_response["status"] = "error";
+				return res.json( json_response );
+			})
+		}
+	}
+}

@@ -126,7 +126,6 @@
 
 								const quantity = parseInt(prompt("Enter new quantity: ", $(this).data("quantity")));
 								const price = parseFloat(prompt("Enter new price: ", $(this).data("price")/100))*100;
-								console.log(price);
 
 								updateSoapAjax(id, quantity, price);
 							})

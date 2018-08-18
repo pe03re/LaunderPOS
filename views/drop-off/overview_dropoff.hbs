@@ -145,6 +145,8 @@
 <!-- JS -->
 <script>
 	$(document).ready(function() {
+
+
 		// Load Cart Items
 		$.ajax({
 			url: "/transaction/cart/get",
@@ -223,6 +225,7 @@
 				alert("GET: Failed to contact server.");
 			}
 		});
+
 
 		// Add Dropoff to database, and cart
 		$("#addBtn").click(function() {

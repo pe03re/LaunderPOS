@@ -132,14 +132,14 @@ exports.postAddToCart = (req, res) => {
 			if(json["item_type"] == "dropoff") {
 
 				const new_dropoff_data = json["data"];
-				let dropOff_data;
+				let dropoff_data;
 				let dropOff_id;
 
 				// Create the dropoff
 				return db.createDoc('DropOffs', new_dropoff_data)
 				.then(resp => {
-					dropOff_data = resp.doc;
-					dropOff_id = dropOff_data._id;
+					dropoff_data = resp.doc;
+					dropOff_id = dropoff_data._id;
 
 					// We want to update the dropoff with its ticket_number (starting at 1), and then search for if the customer's number exists in our database
 					const promise_array = Promise.all([
@@ -165,7 +165,7 @@ exports.postAddToCart = (req, res) => {
 					// Loop through all customers
 					if(allCustomers.length > 0) {
 						for(let i=0; i<allCustomers.length; i++) {
-							if(allCustomers[i].phone == dropOff_data.customer_phone) {
+							if(allCustomers[i].phone == dropoff_data.customer_phone) {
 								anyNewCustomer = false;
 							} else {
 								anyNewCustomer = true;
@@ -175,17 +175,17 @@ exports.postAddToCart = (req, res) => {
 
 					// If there is no match, we are going to update and add this to our Customers collection
 					const newCustomer = {
-						firstName: dropOff_data.customer_firstName,
-						lastName: dropOff_data.customer_lastName,
+						firstName: dropoff_data.customer_firstName,
+						lastName: dropoff_data.customer_lastName,
 						address: {
-							street: dropOff_data.customer_address.street,
-							city: dropOff_data.customer_address.city,
-							state: dropOff_data.customer_address.state,
-							zip: dropOff_data.customer_address.zip
+							street: dropoff_data.customer_address.street,
+							city: dropoff_data.customer_address.city,
+							state: dropoff_data.customer_address.state,
+							zip: dropoff_data.customer_address.zip
 						},
-						email: dropOff_data.customer_email,
-						phone: dropOff_data.customer_phone,
-						date_registered: dropOff_data.date,
+						email: dropoff_data.customer_email,
+						phone: dropoff_data.customer_phone,
+						date_registered: dropoff_data.date,
 					}
 
 					let create_customer_promise = undefined // Variable containing the function for creating a doc in our database
@@ -221,8 +221,8 @@ exports.postAddToCart = (req, res) => {
 						const sales = current_transaction.sales;
 
 						// Check for the status of the dropoff, if the dropoff is "hold" we dont add it to the transaction, if it is "paid" then we add it to the transaction
-						if(dropOff_data["status"] == "paid") {
-							sales.push(dropOff_data);
+						if(dropoff_data["status"] == "paid") {
+							sales.push(dropoff_data);
 						};
 
 						// Update the transaction
@@ -259,8 +259,8 @@ exports.postAddToCart = (req, res) => {
 							const sales = current_transaction.sales;
 
 							// Check for the status of the dropoff, if the dropoff is "hold" we dont add it to the transaction, if it is "paid" then we add it to the transaction
-							if(dropOff_data["status"] == "paid") {
-								sales.push(dropOff_data);
+							if(dropoff_data["status"] == "paid") {
+								sales.push(dropoff_data);
 							};
 
 							// Update the database
@@ -402,7 +402,7 @@ exports.postCheckoutTransaction = (req, res) => {
 						all_soap_sales_id.push( sales[i]._id );
 					}
 				};
-				
+
 				// Now that we have an array of soap ids, we are going to update each soap, and $inc the quantity field by -1 (basically, subtract by one)
 				return Soap.update(
 					{ _id: { $in: all_soap_sales_id }},
@@ -427,5 +427,4 @@ exports.postCheckoutTransaction = (req, res) => {
 			})
 		}
 	}
-
 };

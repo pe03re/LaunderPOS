@@ -65,6 +65,7 @@ app.get('/overview/soap', soapController.getSoapOverview);
 
 // DropOffs
 app.get('/overview/dropoff', dropOffController.getDropOffForm);
+app.post('/dropoff/update/status', dropOffController.postUpdateDropoffStatus);
 
 // Customers
 app.get('/customers/list', customersController.getCustomersList);
@@ -74,7 +75,7 @@ app.post('/customers/phone/lookup', customersController.postCheckCustomerPhone);
 app.post('/transaction/cart/add', transactionController.postAddToCart);
 app.get('/transaction/cart/get', transactionController.getCurrentTransaction);
 app.post('/transaction/cart/clear', transactionController.postClearTransaction);
-app.post('/transaction/cart/checkout', transactionController.postCheckoutTransaction); 
+app.post('/transaction/cart/checkout', transactionController.postCheckoutTransaction);
 
 // Inventory API
 app.get('/inventory', inventoryController.getInventoryView);

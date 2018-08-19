@@ -214,7 +214,7 @@ exports.postAddToCart = (req, res) => {
 
 					// Check if there is any 'in progress' transaction
 					if(num_found == 1) {
-						console.log("EXISTING TRANSACTION FOUND");
+						console.log("EXISTING TRANSACTION IN PROGRESS FOUND");
 						const current_transaction = resp.docs[0];
 
 						// Add Dropff to transaction
@@ -240,7 +240,7 @@ exports.postAddToCart = (req, res) => {
 
 					// Otherwise, create a transaction
 					else {
-						console.log("NO TRANSACTION FOUND, TRANSACTION CREATED");
+						console.log("NO TRANSACTION IN PROGRESS FOUND, TRANSACTION CREATED");
 						const new_transaction = {};
 
 						// Update status to 'in progress'
@@ -262,7 +262,7 @@ exports.postAddToCart = (req, res) => {
 							if(dropOff_data["status"] == "paid") {
 								sales.push(dropOff_data);
 							};
-							
+
 							// Update the database
 							return db.updateById('Transactions', transaction_id, current_transaction)
 							.then(resp => {
@@ -305,7 +305,7 @@ exports.getCurrentTransaction = (req, res) => {
 
 		// Check if there is any 'in progress' transaction
 		if(num_found == 1) {
-			console.log("EXISTING TRANSACTION FOUND");
+			console.log("EXISTING TRANSACTION IN PROGRESS FOUND");
 			const current_transaction = resp.docs[0];
 			const transaction_id = current_transaction._id;
 
@@ -369,6 +369,36 @@ exports.postClearTransaction = (req, res) => {
 	}
 }
 
+/*
+	POST /transaction/cart/checkout
+	Checks out the data, and stores it in our history.
+*/
 exports.postCheckoutTransaction = (req, res) => {
+
+	const json = req.body;
+	const json_response = {};
+	json_response["msg_type"] = "server_response";
+
+	// We are looking for a ajax post call, and an id in the json for us to find in our database
+	if("msg_type" in json && json["msg_type"] == "server_request") {
+		if("id" in json) {
+			const transactionId = json["id"];
+
+			// Because we can only have 1 "in progress" transaction, we have to change the current transaction status to done. Transactions that do not have the status "in progress" will be be cleared from the cart.
+			const query = { "status": "done" };
+			return db.updateById("Transactions", transactionId, query)
+			.then(resp => {
+				
+				json_response["status"] = "success";
+				return res.json( json_response );
+			})
+			.catch(err => {
+
+				console.log(err);
+				json_response["status"] = "error";
+				return res.json( json_response );
+			})
+		}
+	}
 
 };

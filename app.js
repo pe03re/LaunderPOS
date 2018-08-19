@@ -74,6 +74,7 @@ app.post('/customers/phone/lookup', customersController.postCheckCustomerPhone);
 app.post('/transaction/cart/add', transactionController.postAddToCart);
 app.get('/transaction/cart/get', transactionController.getCurrentTransaction);
 app.post('/transaction/cart/clear', transactionController.postClearTransaction);
+app.post('/transaction/cart/checkout', transactionController.postCheckoutTransaction); 
 
 // Inventory API
 app.get('/inventory', inventoryController.getInventoryView);

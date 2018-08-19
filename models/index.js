@@ -13,5 +13,5 @@ module.exports = {
 	Customers,
 	Dropoffs,
 	Soap,
-	Transactions
+	Transactions,
 };

@@ -3,7 +3,7 @@ const Soap = require('../models/Soap');
 
 /*
 	GET /
-	This page will render all buttons for quick checking out of soap
+	Gets the buttons for quick action redirection
 */
 exports.getHome = (req, res) => {
 	return res.render('static/home', {

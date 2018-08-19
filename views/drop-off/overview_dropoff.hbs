@@ -113,7 +113,7 @@
 								<strong class="pull-left">TOTAL:</strong>
 							</span>
 							<hr />
-							<button class="btn btn-primary btn-lg btn-block size-15"><i class="fa fa-mail-forward"></i> Checkout</button>
+							<button id="checkout" class="btn btn-primary btn-lg btn-block size-15"><i class="fa fa-mail-forward"></i> Checkout</button>
 						</div>
 					</div>
 				</div>
@@ -399,5 +399,40 @@
 				}
 			});
 		});
+
+		// Checkout
+		$("#checkout").click(function() {
+
+			// Prepare JSON
+			const json_request = {};
+			json_request["msg_type"] = "server_request";
+			json_request["id"] = $("#transaction_id").val();
+
+			// Ajax call
+			$.ajax({
+				url: '/transaction/cart/checkout',
+				method: 'POST',
+				contentType: "application/json",
+				data: JSON.stringify( json_request ),
+				success: function(data) {
+
+					// On Error
+					if( "status" in data && data["status"] == "error" ) {
+							alert("Error in checking out !");
+					}
+
+					// On Success
+					else {
+						if( "status" in data && data["status"] == "success" ) {
+							window.location = '/overview/dropoff';
+						}
+					}
+				},
+				error: function(err) {
+					console.log(err);
+					alert("POST: Failed to contact server.");
+				}
+			});
+		})
 	})
 </script>

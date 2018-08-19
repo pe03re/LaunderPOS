@@ -4,7 +4,7 @@ const Customers = require('../models/Customers');
 
 /*
 	GET /drop-off/create
-	Creates a dropoff
+	Get page for Dropoff
 */
 exports.getDropOffForm = (req, res) => {
 	return res.render('drop-off/overview_dropoff', {

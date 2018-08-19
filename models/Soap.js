@@ -15,10 +15,7 @@ const SoapSchema = new mongoose.Schema({
 	price: { type: Currency },
 	original_price: { type: Currency}, // Wholesale price
 	barcode_id: String,
-	quantity: {
-		type: Number,
-		default: 1
-	}
+	quantity: Number
 });
 
 const Soap = mongoose.model('Soap', SoapSchema);

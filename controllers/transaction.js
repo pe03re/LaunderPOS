@@ -385,10 +385,37 @@ exports.postCheckoutTransaction = (req, res) => {
 			const transactionId = json["id"];
 
 			// Because we can only have 1 "in progress" transaction, we have to change the current transaction status to done. Transactions that do not have the status "in progress" will be be cleared from the cart.
-			const query = { "status": "done" };
-			return db.updateById("Transactions", transactionId, query)
+
+			// For soap related items, we need to make sure that upon checkout, the quantity of the soap is decreased by one
+			const query = { "status": "in progress"};
+			return db.search("Transactions", query)
 			.then(resp => {
+				const current_transaction = resp.docs[0];
+				const sales = current_transaction.sales;
+
+				// We will push all the soaps into array all_soap so that we can update each quantity
+				let all_soap_sales_id = [];
+
+				for(let i=0; i<sales.length; i++) {
+					// Look for soaps, TODO: add item type in the future, but for now because the property name only exists in soap objects we will look for this
+					if("name" in sales[i]) {
+						all_soap_sales_id.push( sales[i]._id );
+					}
+				};
 				
+				// Now that we have an array of soap ids, we are going to update each soap, and $inc the quantity field by -1 (basically, subtract by one)
+				return Soap.update(
+					{ _id: { $in: all_soap_sales_id }},
+					{ $inc: { quantity: -1 }}
+				).exec();
+			})
+			.then(resp => {
+				// Once we have updated the quantity of each soap, we areg oing to update the status of the transaction
+				const query = { "status": "done" };
+				return db.updateById("Transactions", transactionId, query);
+			})
+			.then(resp => {
+
 				json_response["status"] = "success";
 				return res.json( json_response );
 			})

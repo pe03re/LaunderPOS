@@ -10,7 +10,6 @@ const db = require('../utils/db');
 const Soap = require('../models/Soap');
 const DropOffs = require('../models/Drop-off');
 
-
 /*
 	GET /inventory
 	Render the view

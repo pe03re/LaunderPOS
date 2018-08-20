@@ -404,10 +404,15 @@ exports.postCheckoutTransaction = (req, res) => {
 				};
 
 				// Now that we have an array of soap ids, we are going to update each soap, and $inc the quantity field by -1 (basically, subtract by one)
-				return Soap.update(
-					{ _id: { $in: all_soap_sales_id }},
-					{ $inc: { quantity: -1 }}
-				).exec();
+				for(let i=0; i<all_soap_sales_id.length; i++) {
+					Soap.update(
+						{ _id: all_soap_sales_id[i] },
+						{ $inc: { quantity: -1 }}
+					).exec();
+				}
+
+				// Add a return statement here so that the "then" can fire
+				return;
 			})
 			.then(resp => {
 				// Once we have updated the quantity of each soap, we areg oing to update the status of the transaction

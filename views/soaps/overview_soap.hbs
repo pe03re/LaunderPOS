@@ -49,12 +49,26 @@
 						<div class="toggle-content">
 							<span class="clearfix">
 								<span class="pull-right size-20">
-									<div id="finalPrice"></div>
+									<input id="finalPrice" disabled style="width:100px" />
 								</span>
 								<strong class="pull-left">TOTAL:</strong>
 							</span>
 							<hr />
 							<button id="checkout" class="btn btn-primary btn-lg btn-block size-15"><i class="fa fa-mail-forward"></i> Checkout</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Customer Payment -->
+				<div class="toggle-transparent toggle-bordered-full clearfix">
+					<div class="toggle active">
+						<div class="toggle-content">
+							<span class="clearfix">
+								<span class="pull-right size-20">
+									<input id="paymentTotal" style="width: 100px" type="number" />
+								</span>
+								<strong class="pull-left">PAYMENT TOTAL:</strong>
+							</span>
 						</div>
 					</div>
 				</div>
@@ -145,11 +159,7 @@
 
 							// Add the price to the UI
 							finalPrice = (finalPrice/100);
-							$("#finalPrice").append(
-								`<p>
-									${finalPrice}
-								</p>`
-							)
+							$("#finalPrice").val(finalPrice);
 
 							// Load the transaction_id into a div
 							if("transaction_id" in data) {
@@ -270,6 +280,12 @@
 					else {
 						if( "status" in data && data["status"] == "success" ) {
 							window.location = '/overview/soap';
+
+							// Customer Due processing
+							const paymentTotal = $("#paymentTotal").val() * 100;
+							const finalTotal = $("#finalPrice").val() * 100;
+							const changeDue = (paymentTotal - finalTotal)/100;
+							alert(`The customer is due: ${changeDue}`);
 						}
 					}
 				},

@@ -2,7 +2,7 @@
 Web based POS built specifically for laundromats, and to test my familiarity with Node.js, building a JSON based API, and a project for me to use software to help businesses.
 
 ### Why a specific POS just for laundromats?
-Alot of POS systems currently are built catering to businesses that require just adding items, and checking out. However, for laundromats, the business revolves around not just detergents, but drop-offs as well. Drop-offs require much more than just adding an item to the checkout cart.
+Alot of POS systems currently are built catering to businesses that require just adding items, and checking out. However, for laundromats, the business revolves around not just detergents and in-store washing, but drop-offs as well. Drop-offs require much more than just adding an item to the checkout cart.
 
 ### Technologies Used
 ```
